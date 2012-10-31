@@ -1,15 +1,15 @@
 {
   "name": "sysctl",
   "description": "Configures sysctl parameters",
-  "long_description": "= DESCRIPTION:\nSet sysctl values from Chef!\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\nnode[:sysctl] = A namespace for sysctl settings.\n\n= USAGE:\nThere are two ways of setting sysctl values:\n1. Set chef attributes in the _sysctl_ namespace, E.G.:\n<tt>default[:sysctl][:vm][:swappiness] = 20</tt>\n2. Set values in a cookbook_file - 69-chef-static.conf\n\n",
-  "maintainer": "Fewbytes Technologies",
-  "maintainer_email": "avishai@fewbytes.com",
+  "long_description": "Description\n===========\n\nSet sysctl values from Chef!\n\nAttributes\n==========\n\n* `node['sysctl']` - A namespace for sysctl settings.\n\nUsage\n=====\n\nThere are two ways of setting sysctl values:\n\n1. Set chef attributes in the **sysctl** namespace. e.g.:\n\n        node.set['sysctl']['set swappiness'] = { 'vm.swappiness' => '20' }\n2. Set values in a `cookbook_file` Resource.\n3. With Ressource/Provider.\n\nResource/Provider\n=================\n\nThis Cookbook includes two LWRPs:\n\n1. **sysctl**\n2. **sysctl_multi**\n\nsysctl\n------\n\n## Actions\n\n- **:save** - Save and set a sysctl value (default).\n- **:set** - Set a sysctl value.\n- **:remove** - Remove a (previous set) sysctl.\n\n## Attribute Parameters\n\n- **variable** - Variable to manage. e.g. `net.ipv4.ip_forward`, `vm.swappiness`.\n- **value** - Value to affect to variable. e.g. `1`, `0`.\n- **path** - Path to a specific file.\n\n### Examples\n\n###ruby\n\n    # Set 'vm.swappiness' to '60'. Will create /etc/sysctl.d/40-vm.wappiness.conf\n    sysctl 'vm.swappiness' do\n        value '40'\n    end\n\n####the same. will create `/etc/sysctl.d/40-vm_swappiness_to_60.conf`\n\n    sysctl 'vm swappiness to 60' do\n      variable 'vm.swappiness'\n      value '60'\n    end\n\n####Remove /etc/sysctl.d/40-ip_config.conf\n    sysctl 'ip config' do\n      action :remove\n    end\n\n#### Set swappiness but don't save it.\n    sysctl 'vm.swappiness' do\n      action :set\n      value '40'\n    end\n\n\nsysctl_multi\n------------\n\n### Actions\n\n- **:save** - Save and set a sysctl value (default).\n- **:set** - set a sysctl value.\n- **:remove** - remove a (previous set) sysctl.\n\n### Attribute Parameters\n\n- **instructions** - Hash with instruction. e.g. `{variable => value, variable2 => value2}`.\n  Override use of 'variable' and 'value'.\n- **path** - Path to a specific file.\n\n### Examples\n\n####ruby\n### set multi variables. will create /etc/sysctl.d/69-ip_config.conf\n    sysctl_multi 'ip config' do\n      instructions {\n        'net.ipv4.ip_forward' => '1',\n        'net.ipv6.conf.all.forwarding' => '1',\n        'net.ipv4.tcp_syncookies' => '1'}\n    end\n\n",
+  "maintainer": "Guilhem Lettron",
+  "maintainer_email": "guilhem.lettron@youscribe.com",
   "license": "Apache v2.0",
   "platforms": {
-    "ubuntu": ">= 0.0.0",
     "debian": ">= 0.0.0",
-    "redhat",
-    "centos"
+    "ubuntu": ">= 0.0.0",
+    "centos": ">= 0.0.0",
+    "redhat": ">= 0.0.0"
   },
   "dependencies": {
   },
@@ -29,6 +29,5 @@
   },
   "recipes": {
   },
-  "version": "0.1.0"
+  "version": "0.1.6"
 }
-
