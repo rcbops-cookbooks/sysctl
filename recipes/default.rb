@@ -39,21 +39,20 @@ end
 
 if node.attribute?('sysctl')
   node['sysctl'].each do |item|
-    f_name = item.first.gsub(' ', '_')
-    template "/etc/sysctl.d/50-chef-attributes-#{f_name}.conf" do
+    f_name = "/etc/sysctl.d/50-chef-attributes-#{item.first.gsub(' ', '_')}.conf"
+    template f_name do
       source 'sysctl.conf.erb'
       mode '0644'
       owner 'root'
       group 'root'
       variables(:instructions => item[1])
-      notifies :run, "execute[sysctl-p]"
+      notifies :run, "execute[sysctl -p #{item.first}]"
+    end
+    
+    execute "sysctl -p #{item.first}" do
+      command "sysctl -p #{f_name}"
+      action :nothing
     end
   end
 end
 
-execute "sysctl-p" do
-  Dir.glob('/etc/sysctl.d/*.conf').each do |file|
-    command  "sysctl -p #{file}"
-  end
-  action :nothing
-end
