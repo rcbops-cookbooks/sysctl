@@ -23,11 +23,9 @@ package "fake-procps" do
   only_if { platform?("fedora") }
 end
 
-
-# TODO(Youscribe) change this by something more "clean".
 execute 'remove old files' do
   command 'rm --force /etc/sysctl.d/50-chef-attributes-*.conf'
-  action :run
+  not_if { Dir.glob("/etc/sysctl.d/50-chef-attributes-*.conf").empty? }
 end
 
 # redhat supports sysctl.d but doesn't create it by default
