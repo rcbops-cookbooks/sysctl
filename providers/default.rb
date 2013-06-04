@@ -19,16 +19,16 @@
 #
 action :save do
 
-  fullname = getPath
+  fullname = get_path
 
   execute "sysctl-p" do
     command "sysctl -p #{fullname}"
     action :nothing
   end
 
-  file getPath do
-    notifies :run, resources(:execute => "sysctl-p")
-    content "#{getVariable} = #{new_resource.value}\n"
+  file get_path do
+    notifies :run, "execute[sysctl-p]"
+    content "#{get_variable} = #{new_resource.value}\n"
     owner 'root'
     group 'root'
     mode '0644'
@@ -39,27 +39,28 @@ end
 
 action :set do
   execute 'set sysctl' do
-    command "sysctl #{getVariable}=#{new_resource.value}"
+    command "sysctl #{get_variable}=#{new_resource.value}"
   end
   new_resource.updated_by_last_action(true)
 end
 
 
 action :remove do
-  file getPath do
+  file get_path do
     action :delete
   end
   new_resource.updated_by_last_action(true)
 end
 
 
-def getPath
+def get_path
   f_name = new_resource.name.gsub(' ', '_')
   priority = new_resource.priority
-  return new_resource.path ? new_resource.path : "/etc/sysctl.d/#{priority}-#{f_name}.conf"
+  return new_resource.path ? new_resource.path : \
+    "/etc/sysctl.d/#{priority}-#{f_name}.conf"
 end
 
 
-def getVariable
+def get_variable
   return new_resource.variable ? new_resource.variable : new_resource.name
 end
