@@ -19,14 +19,14 @@
 #
 action :save do
 
-  fullname = getPath
+  fullname = get_path
 
   execute "sysctl-p" do
     command "sysctl -p #{fullname}"
     action :nothing
   end
 
-  template getPath do
+  template get_path do
     source 'sysctl.conf.erb'
     cookbook 'sysctl'
     owner 'root'
@@ -35,7 +35,7 @@ action :save do
     variables(
       :instructions => new_resource.instructions,
       :name => new_resource.name)
-    notifies :run, resources(:execute => "sysctl-p")
+    notifies :run, "execute[sysctl-p]"
   end
   new_resource.updated_by_last_action(true)
 end
@@ -52,7 +52,7 @@ end
 
 
 action :remove do
-  file getPath do
+  file get_path do
     action :delete
   end
   new_resource.updated_by_last_action(true)
@@ -60,8 +60,9 @@ end
 
 
 private
-def getPath
+def get_path
   f_name = new_resource.name.gsub(' ', '_')
   priority = new_resource.priority
-  return new_resource.path ? new_resource.path : "/etc/sysctl.d/#{priority}-#{f_name}.conf"
+  return new_resource.path ? new_resource.path : \
+    "/etc/sysctl.d/#{priority}-#{f_name}.conf"
 end
