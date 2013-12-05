@@ -3,7 +3,8 @@ name             "sysctl"
 license          "Apache v2.0"
 description      "Configures sysctl parameters"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "4.1.2"
+version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
+
 %w{ debian ubuntu centos redhat }.each do |os|
   supports os
 end
